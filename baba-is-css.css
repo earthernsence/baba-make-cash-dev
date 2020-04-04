@@ -1,0 +1,70 @@
+body {
+  background-color: black;
+}
+
+hr {
+  clear: both;
+  visibility: hidden;
+}
+
+#topbar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 50px;
+  width: 100%;
+  background-image: url('https://cdn.glitch.com/29eb5997-d999-4196-912c-7a6af127eaa2%2Fbricks.gif?v=1585475656801');
+}
+
+#topbar2 {
+  position: absolute;
+  top: 50px;
+  left: 0;
+  height: 300px;
+  width: 150px;
+  background-image: url('https://cdn.glitch.com/29eb5997-d999-4196-912c-7a6af127eaa2%2Fbricks.gif?v=1585475656801');
+}
+
+#title {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 300px;
+}
+
+#cash {
+  width: 600px;
+  height: 300px;
+  background-image: url('https://cdn.glitch.com/29eb5997-d999-4196-912c-7a6af127eaa2%2Fcash.gif?v=1585477561043')
+}
+
+#character1-keketext {
+  position: absolute;
+  top: 350px;
+}
+
+#character1-istext {
+  position: absolute;
+  top: 350px;
+  left: 50px;
+}
+
+#character1-heretext {
+  position: absolute;
+  top: 350px;
+  left: 100px;
+}
+
+#character1 {
+  position: absolute;
+  top: 400px;
+}
+
+#character1-button {
+  position: absolute;
+  top: 500px;
+  border-width: 2px;
+  border-color: #e5533b;
+  background-color: black;
+  width: 125px;
+}
