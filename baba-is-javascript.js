@@ -124,7 +124,7 @@ document.getElementById("upgrade1").style="display:none";
 
 //how characters are hired
 function hireKeke() { //keke hiring
-  if (game.cash >= game.keke.kekeCost) {
+  if (game.cash.gte(game.keke.kekeCost)) {
     if (game.keke.kekespushed < 1) {
       game.charactersHired.push('keke'); //same reason as upgradesPurchased
       game.keke.kekespushed += 1
