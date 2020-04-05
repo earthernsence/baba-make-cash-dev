@@ -79,4 +79,16 @@ hr {
   height: 64px;
 }
 
+.upgrbutton {
+  background-color: #111111;
+  color: white;
+  border-width: 2px;
+  border-color: #36393f;
+}
+
+#upgrtable {
+  border-width: 2px;
+  border-color: #36393f;
+  text-align: center;
+}
 

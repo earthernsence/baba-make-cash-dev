@@ -34,6 +34,7 @@ function reset() {
     charactersHired: [],
     cashPerSecond: new Decimal(0),
       keke: {
+        unlocked: false,
         kekespushed: 0,
         kekes: new Decimal(0),
         kekeCost: new Decimal(50),
@@ -41,9 +42,23 @@ function reset() {
   }
 }
 
+function unDecimalifySave() {
+  game.cash = new Decimal(game.cash)
+  game.highestCash = new Decimal(game.highestCash)
+  game.cashPerSecond = new Decimal(game.cashPerSecond)
+  game.keke.kekes = new Decimal(game.keke.kekes)
+  game.keke.kekeCost = new Decimal(game.keke.kekeCost)
+}
+
 function loadGame(loadgame) {
-  reset()
-  if (typeof loadgame.cash != "undefined") game.cash = loadgame.cash
+  loadgame = JSON.parse(loadgame)
+  if (!loadgame) {
+    reset()
+  } else {
+  game = JSON.parse(loadgame)
+  }
+  unDecimalifySave()
+  /*if (typeof loadgame.cash != "undefined") game.cash = loadgame.cash
   if (typeof loadgame.highestCash != "undefined") game.highestCash = loadgame.highestCash
   if (typeof loadgame.upgradesPurchased != "undefined") game.upgradesPurchased = loadgame.upgradesPurchased
   if (typeof loadgame.charactersHired != "undefined") game.charactersHired = loadgame.charactersHired
@@ -51,6 +66,21 @@ function loadGame(loadgame) {
   if (typeof loadgame.keke.kekespushed != "undefined") game.keke.kekespushed = loadgame.keke.kekespushed
   if (typeof loadgame.keke.kekes != "undefined") game.keke.kekes = loadgame.keke.kekes
   if (typeof loadgame.keke.kekeCost != "undefined") game.keke.kekeCost = loadgame.keke.kekeCost
+  */
+  if (!game.keke.unlocked) {
+    document.getElementById("character1-button").style="display:none";
+    document.getElementById("character1-keketext").style="display:none";
+    document.getElementById("character1-istext").style="display:none";
+    document.getElementById("character1-heretext").style="display:none";
+    document.getElementById("character1").style="display:none";
+  } else {
+    document.getElementById("character1-button").style="display:block";
+    document.getElementById("character1-keketext").style="display:block";
+    document.getElementById("character1-istext").style="display:block";
+    document.getElementById("character1-heretext").style="display:block";
+    document.getElementById("character1").style="display:block";
+  }
+unDecimalifySave()
 }
 //end
 
@@ -79,6 +109,7 @@ update()
 function checkIfCanShowThings() {
 if (game.cash >= 10) { // for upgrade1
 document.getElementById("upgrade1").style="display:block";
+document.getElementById("")
 } else {
    document.getElementById("upgrade1").style="display:none"
 }
@@ -93,6 +124,7 @@ if (game.upgradesPurchased.includes("upgrade1") && game.cash >= 10) {
   document.getElementById("character1-istext").style="display:block";
   document.getElementById("character1-heretext").style="display:block";
   document.getElementById("character1").style="display:block";
+  game.keke.unlocked = true
 }
 if (game.charactersHired.includes("keke")) { //keeps keke showing no matter what
   document.getElementById("character1-button").style="display:block";
@@ -215,7 +247,7 @@ function exportSave() {
 
 function importSave() {
   let loadgame=""
-  loadgame=LZString.decompressFromBase64(prompt("Paste in your save here. /n Will overwrite your current save!"))
+  loadgame=LZString.decompressFromBase64(prompt("Paste in your save here. n/ Will overwrite your current save!"))
   if (loadgame!="") {
     loadGame(loadgame)
   }

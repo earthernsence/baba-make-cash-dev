@@ -33,9 +33,12 @@
     <hr size="32">
     <img src="https://cdn.glitch.com/29eb5997-d999-4196-912c-7a6af127eaa2%2Fcash_button.gif?v=1585535564759" onclick="moreCash()">
 <br>
-      <button style="display:block" id="upgrade1" onclick="purchaseUpgrade('upgrade1')">Multiply CPC by 2. <br> Cost: 10 Cash</button>
-      </center>
-<img src="resources/keketext.gif" alt="keke" height="50" width="50" id="character1-keketext" class="kekecharacter" style="display:none"> <img src="resources/istext.gif" alt="is" height="50" width="50" id="character1-istext" class="kekecharacter" style="display:none"> <img src="resources/heretext.gif" alt="here" height="50" width="50" id="character1-heretext" class="kekecharacter" style="display:none"> <br>
+  </center>
+  <table style="top: 100px; right: 0px; display:block" id="upgrtable">
+    <div style="font-size: large;">Upgrades</div>
+      <button style="display:block; top: 100px; right: 0px" id="upgrade1" onclick="purchaseUpgrade('upgrade1')" class="upgrbutton">Multiply CPC by 2. <br> Cost: 10 Cash</button>
+      </table>
+      <img src="resources/keketext.gif" alt="keke" height="50" width="50" id="character1-keketext" class="kekecharacter" style="display:none"> <img src="resources/istext.gif" alt="is" height="50" width="50" id="character1-istext" class="kekecharacter" style="display:none"> <img src="resources/heretext.gif" alt="here" height="50" width="50" id="character1-heretext" class="kekecharacter" style="display:none"> <br>
     <img src="resources/keke.gif" alt="kekesit" height="100" width="100" id="character1" class="kekecharacter" style="display:none"> <button id="character1-button" class="kekecharacter"  style="display:none" onclick="hireKeke()"><text style="color:white">Hire</text> <text style="color:#e5533b">Keke.</text><br><text style="color:white">Cost: <p id="kekeCost">x</p> <text style="color:green">Cash</text></button>
     </div>
     <div id="stats" class="tab">
@@ -43,10 +46,14 @@
     </div>
     <div id="options" class="tab">
       <div>options</div>
+      <center>
       <img src="resources/savetext.gif" onClick="saveGame()">
       <img src="resources/import.gif" onClick="importSave()">
       <img src="resources/export.gif" onClick="exportSave()">
+      </center>
     </div>
-    <a href="credits.html" style="position: fixed; right: 0px; top: 750px">Credits</a>
+    <center>
+    <a href="credits.html" style="position: fixed; right: 0px; top: 900px">Credits</a>
+    </center>
   </body>
 </html>
