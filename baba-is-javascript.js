@@ -1,29 +1,65 @@
 /* global Decimal*/
 
 let game
+let keke
 
-function reset() {
-  
+
   game = {
     cash: new Decimal(0),
-    totalCash: new Decimal(0),
+    highestCash: new Decimal(0),
     upgradesPurchased: [],
-    kekeCost: new Decimal(50),
     charactersHired: [],
     cashPerSecond: new Decimal(0),
-    kekes: new Decimal(0)
+      keke: {
+        kekespushed: 0,
+        kekes: new Decimal(0),
+        kekeCost: new Decimal(50),
+    }
   }
-  development = {
-    kekespushed: 0
+
+
+//init function
+function init() {
+  let loadgame = JSON.parse(localStorage.getItem("babamakecash-save"))
+  if (loadgame != null) {
+    loadGame(loadgame)
   }
 }
 
-reset()
+function reset() {
+  game = {
+    cash: new Decimal(0),
+    highestCash: new Decimal(0),
+    upgradesPurchased: [],
+    charactersHired: [],
+    cashPerSecond: new Decimal(0),
+      keke: {
+        kekespushed: 0,
+        kekes: new Decimal(0),
+        kekeCost: new Decimal(50),
+    }
+  }
+}
+
+function loadGame(loadgame) {
+  reset()
+  if (typeof loadgame.cash != "undefined") game.cash = loadgame.cash
+  if (typeof loadgame.highestCash != "undefined") game.highestCash = loadgame.highestCash
+  if (typeof loadgame.upgradesPurchased != "undefined") game.upgradesPurchased = loadgame.upgradesPurchased
+  if (typeof loadgame.charactersHired != "undefined") game.charactersHired = loadgame.charactersHired
+  if (typeof loadgame.cashPerSecond != "undefined") game.cashPerSecond = loadgame.cashPerSecond
+  if (typeof loadgame.keke.kekespushed != "undefined") game.keke.kekespushed = loadgame.keke.kekespushed
+  if (typeof loadgame.keke.kekes != "undefined") game.keke.kekes = loadgame.keke.kekes
+  if (typeof loadgame.keke.kekeCost != "undefined") game.keke.kekeCost = loadgame.keke.kekeCost
+}
+//end
+
+
 
 function update() {
   document.getElementById("cash_number").innerHTML = game.cash
-  document.getElementById("kekeCost").innerHTML = game.kekeCost
-  document.getElementById("cashstat").innerHTML = game.totalCash
+  document.getElementById("kekeCost").innerHTML = game.keke.kekeCost
+  document.getElementById("cashstat").innerHTML = game.highestCash
 }
 
   if (screen.width < 900 || window.innerWidth < 900) {
@@ -69,9 +105,9 @@ if (game.charactersHired.includes("keke")) { //keeps keke showing no matter what
 //end 
 
 //for highest ever cash
-function checkIfTotalCanBeIncremented() {
-  if (game.totalCash < game.cash) {
-    game.totalCash = game.cash
+function checkIfHighestCanBeIncremented() {
+  if (game.cash.gt(game.highestCash)) {
+    game.highestCash = game.cash
   }
 }
 //end
@@ -88,19 +124,19 @@ document.getElementById("upgrade1").style="display:none";
 
 //how characters are hired
 function hireKeke() { //keke hiring
-  if (game.cash >= game.kekeCost) {
-if (development.kekespushed < 1) {
-game.charactersHired.push('keke'); //same reason as upgradesPurchased
-development.kekespushed = development.kekespushed + 1
-}
-    if (development.kekespushed == 1) {
-  game.cash = game.cash.minus(game.kekeCost);
-  game.kekeCost = game.kekeCost.multiply(1.25).floor();
-  document.getElementById("kekeCost").innerHTML = game.kekeCost
-  game.cashPerSecond = game.cashPerSecond.add(2.5);
-  game.kekes = game.kekes.add(1)
-}
-}
+  if (game.cash >= game.keke.kekeCost) {
+    if (game.keke.kekespushed < 1) {
+      game.charactersHired.push('keke'); //same reason as upgradesPurchased
+      game.keke.kekespushed += 1
+    }
+    if (game.keke.kekespushed == 1) {
+      game.cash = game.cash.minus(game.keke.kekeCost);
+      game.keke.kekeCost = game.keke.kekeCost.multiply(1.25).floor();
+      document.getElementById("kekeCost").innerHTML = game.keke.kekeCost
+      game.cashPerSecond = game.cashPerSecond.add(2.5);
+      game.keke.kekes = game.keke.kekes.add(1)
+    }
+  }
 }
 //end
 
@@ -120,14 +156,75 @@ game.cash = game.cash.add(2)
 }
 //end
 
+//tabs
 function showTab(name) {
 	const tabs = document.getElementsByClassName("tab");
 	for (let tab of tabs) { //The for basically says: "for each tab in tabs do this" - kajfik
 		tab.style.display = (tab.id === name) ?  "block" : "none";
 	}
 }
+//end
+
+//save
+function saveGame() {
+  var save = LZString.compressToBase64(JSON.stringify(game))
+  window.localStorage.setItem('babamakecash-save', save)
+}
+
+function copyToClipboard(el) {
+  el = (typeof el === "string") ? document.querySelector(el) : el;
+  if (navigator.userAgent.match(/ipad|ipod|iphone/i)) {
+      var editable = el.contentEditable;
+      var readOnly = el.readOnly;
+      el.contentEditable = true;
+      el.readOnly = true;
+      var range = document.createRange();
+      range.selectNodeContents(el);
+      var selection = window.getSelection();
+      selection.removeAllRanges();
+      selection.addRange(range);
+      el.setSelectionRange(0, 999999);
+      el.contentEditable = editable;
+      el.readOnly = readOnly;
+  }
+  else {
+      el.select();
+  }
+  document.execCommand("copy");
+}
+
+function copyStringToClipboard(str) {
+    var el = document.createElement("textarea");
+    el.value = str;
+    el.setAttribute("readonly", "");
+    el.style = {
+      position: "absolute",
+      left: "-9999px"
+    };
+    document.body.appendChild(el);
+    copyToClipboard(el)
+    document.body.removeChild(el);
+    alert("Copied to clipboard")
+}
+
+
+function exportSave() {
+  var exportedSave = console.log(LZString.compressToBase64(JSON.stringify(game)))
+  copyStringToClipboard(exportedSave)
+}
+
+function importSave() {
+  let loadgame=""
+  loadgame=LZString.decompressFromBase64(prompt("Paste in your save here. /n Will overwrite your current save!"))
+  if (loadgame!="") {
+    loadGame(loadgame)
+  }
+}
+//end
+
 //running functions 
 setInterval(update, 10)
 setInterval(checkIfCanShowThings, 10)
-setInterval(checkIfTotalCanBeIncremented, 10)
+setInterval(checkIfHighestCanBeIncremented, 10)
 setInterval(addCPS, 1000)
+setInterval(saveGame, 10000)
