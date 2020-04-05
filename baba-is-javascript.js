@@ -51,36 +51,21 @@ function unDecimalifySave() {
 }
 
 function loadGame(loadgame) {
-  loadgame = JSON.parse(loadgame)
-  if (!loadgame) {
     reset()
-  } else {
-  game = JSON.parse(loadgame)
-  }
-  unDecimalifySave()
-  /*if (typeof loadgame.cash != "undefined") game.cash = loadgame.cash
-  if (typeof loadgame.highestCash != "undefined") game.highestCash = loadgame.highestCash
-  if (typeof loadgame.upgradesPurchased != "undefined") game.upgradesPurchased = loadgame.upgradesPurchased
-  if (typeof loadgame.charactersHired != "undefined") game.charactersHired = loadgame.charactersHired
-  if (typeof loadgame.cashPerSecond != "undefined") game.cashPerSecond = loadgame.cashPerSecond
-  if (typeof loadgame.keke.kekespushed != "undefined") game.keke.kekespushed = loadgame.keke.kekespushed
-  if (typeof loadgame.keke.kekes != "undefined") game.keke.kekes = loadgame.keke.kekes
-  if (typeof loadgame.keke.kekeCost != "undefined") game.keke.kekeCost = loadgame.keke.kekeCost
-  */
-  if (!game.keke.unlocked) {
-    document.getElementById("character1-button").style="display:none";
-    document.getElementById("character1-keketext").style="display:none";
-    document.getElementById("character1-istext").style="display:none";
-    document.getElementById("character1-heretext").style="display:none";
-    document.getElementById("character1").style="display:none";
-  } else {
-    document.getElementById("character1-button").style="display:block";
-    document.getElementById("character1-keketext").style="display:block";
-    document.getElementById("character1-istext").style="display:block";
-    document.getElementById("character1-heretext").style="display:block";
-    document.getElementById("character1").style="display:block";
-  }
-unDecimalifySave()
+    try {
+      game = JSON.parse(loadgame)
+      unDecimalifySave()
+  
+      let style = game.keke.unlocked ? "display:block" : "display:none";
+      document.getElementById("character1-button").style = style;
+      document.getElementById("character1-keketext").style = style;
+      document.getElementById("character1-istext").style = style;
+      document.getElementById("character1-heretext").style = style;
+      document.getElementById("character1").style = style;
+    } catch (error) {
+      console.log("GAME is BROKEN! Error at function loadGame() when parsing save string:\n" + error)
+      return;
+    }
 }
 //end
 
