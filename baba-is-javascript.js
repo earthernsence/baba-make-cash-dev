@@ -187,9 +187,9 @@ game.cash = game.cash.add(2)
 
 //tabs
 function showTab(name) {
-	const tabs = document.getElementsByClassName("tab");
+	const tabs = document.getElementsByClassName("tabbtn");
 	for (let tab of tabs) { //The for basically says: "for each tab in tabs do this" - kajfik
-		tab.style.display = (tab.id === name) ?  "block" : "none";
+    tab.style.display = (tab.id === name) ?  "block" : "none";
 	}
 }
 //end
@@ -234,13 +234,14 @@ function copyStringToClipboard(str) {
     document.body.appendChild(el);
     copyToClipboard(el)
     document.body.removeChild(el);
-    alert("Copied to clipboard")
+    alert("Copied to clipboard and placed in the developer Console.")
 }
 
 
 function exportSave() {
-  var exportedSave = console.log(LZString.compressToBase64(JSON.stringify(game)))
-  return exportedSave;
+  var exportedSave = LZString.compressToBase64(JSON.stringify(game))
+  copyStringToClipboard(exportedSave)
+  console.log(exportedSave)
 }
 
 function importSave() {
@@ -250,6 +251,17 @@ function importSave() {
     loadGame(loadgame)
     saveGame()
   }
+}
+
+function resetSave() {
+ var resetCheck = prompt("are you sure you wish to delete your save? type 'SAVE is DELETE' to delete it!")
+if(resetCheck === "SAVE is DELETE") {
+localStorage.removeItem("babamakecash-save")
+initialize()
+} else {
+  saveGame()
+  return;
+}
 }
 //end
 
