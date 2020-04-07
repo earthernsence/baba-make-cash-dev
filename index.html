@@ -11,7 +11,7 @@
     <script src="baba-is-javascript.js" defer></script>
     <script src="lzstring-min.js"></script>
   </head>  
-  <body>
+  <body onload="initialize()">
     <div id="topbar">
       <img id="title" src="https://cdn.glitch.com/29eb5997-d999-4196-912c-7a6af127eaa2%2Ftitle.gif?v=1585476258250">       
     </div>
@@ -36,10 +36,10 @@
   </center>
   <table style="top: 100px; right: 0px; display:block" id="upgrtable">
     <div style="font-size: large;">Upgrades</div>
-      <button style="display:block; top: 100px; right: 0px" id="upgrade1" onclick="purchaseUpgrade('upgrade1')" class="upgrbutton">Multiply CPC by 2. <br> Cost: 10 Cash</button>
+      <button style="display:block; top: 100px; left: 0px" id="upgrade1" onclick="purchaseUpgrade('upgrade1')" class="upgrbutton">Multiply CPC by 2. <br> Cost: 10 Cash</button>
       </table>
       <img src="resources/keketext.gif" alt="keke" height="50" width="50" id="character1-keketext" class="kekecharacter" style="display:none"> <img src="resources/istext.gif" alt="is" height="50" width="50" id="character1-istext" class="kekecharacter" style="display:none"> <img src="resources/heretext.gif" alt="here" height="50" width="50" id="character1-heretext" class="kekecharacter" style="display:none"> <br>
-    <img src="resources/keke.gif" alt="kekesit" height="100" width="100" id="character1" class="kekecharacter" style="display:none"> <button id="character1-button" class="kekecharacter"  style="display:none" onclick="hireKeke()"><text style="color:white">Hire</text> <text style="color:#e5533b">Keke.</text><br><text style="color:white">Cost: <p id="kekeCost">x</p> <text style="color:green">Cash</text></button>
+    <img src="resources/keke.gif" alt="kekesit" height="100" width="100" id="character1" class="kekecharacter" style="display:none"> <div id="kekeAmount">You have <p id="kAmount">x</p> <p id="kekeName">kekes.</p></div><br><div id="kekeMultiplier">x<p id="kMult">X</p></div><button id="character1-button" class="kekecharacter"  style="display:none" onclick="hireKeke()"><text style="color:white">Hire</text> <text style="color:#e5533b">Keke.</text><br><text style="color:white">Cost: <p id="kekeCost">x</p> <text style="color:green">Cash</text></button>
     </div>
     <div id="stats" class="tab">
       <div style="color:white; text-align: center">You have had, at most, <span id="cashstat">x</span> cash at a single time.</div>

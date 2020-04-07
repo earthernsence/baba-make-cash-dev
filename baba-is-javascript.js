@@ -14,18 +14,12 @@ let keke
         kekespushed: 0,
         kekes: new Decimal(0),
         kekeCost: new Decimal(50),
+        multiplier: new Decimal(1),
     }
   }
 
 
 //init function
-function init() {
-  let loadgame = JSON.parse(localStorage.getItem("babamakecash-save"))
-  if (loadgame != null) {
-    loadGame(loadgame)
-  }
-}
-
 function reset() {
   game = {
     cash: new Decimal(0),
@@ -38,6 +32,7 @@ function reset() {
         kekespushed: 0,
         kekes: new Decimal(0),
         kekeCost: new Decimal(50),
+        multiplier: new Decimal(1)
     }
   }
 }
@@ -48,6 +43,7 @@ function unDecimalifySave() {
   game.cashPerSecond = new Decimal(game.cashPerSecond)
   game.keke.kekes = new Decimal(game.keke.kekes)
   game.keke.kekeCost = new Decimal(game.keke.kekeCost)
+  game.keke.multiplier= new Decimal(game.keke.multiplier)
 }
 
 function loadGame(loadgame) {
@@ -67,6 +63,14 @@ function loadGame(loadgame) {
       return;
     }
 }
+
+function initialize() {
+  let loadgame = LZString.decompressFromBase64(localStorage.getItem("babamakecash-save"))
+  if (loadgame != null) {
+    loadGame(loadgame)
+    console.log("Got save from local storage...")
+  }
+}
 //end
 
 
@@ -75,6 +79,13 @@ function update() {
   document.getElementById("cash_number").innerHTML = game.cash
   document.getElementById("kekeCost").innerHTML = game.keke.kekeCost
   document.getElementById("cashstat").innerHTML = game.highestCash
+  document.getElementById("kAmount").innerHTML = game.keke.kekes
+  document.getElementById("kMult").innerHTML = game.keke.multiplier
+  if (game.keke.kekes === 0 || game.keke.kekes.gt(1)) {
+document.getElementById("kekeName").innerHTML = "kekes"
+  } else {
+    document.getElementById("kekeName").innerHTML = "keke"
+  }
 }
 
   if (screen.width < 900 || window.innerWidth < 900) {
@@ -150,8 +161,9 @@ function hireKeke() { //keke hiring
       game.cash = game.cash.minus(game.keke.kekeCost);
       game.keke.kekeCost = game.keke.kekeCost.multiply(1.25).floor();
       document.getElementById("kekeCost").innerHTML = game.keke.kekeCost
-      game.cashPerSecond = game.cashPerSecond.add(2.5);
+      game.cashPerSecond = game.cashPerSecond.add(2.5 * game.keke.multiplier);
       game.keke.kekes = game.keke.kekes.add(1)
+      game.keke.multiplier = game.keke.multiplier.multiply(1.1).floor();
     }
   }
 }
@@ -184,8 +196,9 @@ function showTab(name) {
 
 //save
 function saveGame() {
-  var save = LZString.compressToBase64(JSON.stringify(game))
+  let save = LZString.compressToBase64(JSON.stringify(game))
   window.localStorage.setItem('babamakecash-save', save)
+  console.log("Saved game to local storage object 'babamakecash-save'")
 }
 
 function copyToClipboard(el) {
@@ -227,14 +240,15 @@ function copyStringToClipboard(str) {
 
 function exportSave() {
   var exportedSave = console.log(LZString.compressToBase64(JSON.stringify(game)))
-  copyStringToClipboard(exportedSave)
+  return exportedSave;
 }
 
 function importSave() {
   let loadgame=""
-  loadgame=LZString.decompressFromBase64(prompt("Paste in your save here. n/ Will overwrite your current save!"))
+  loadgame=LZString.decompressFromBase64(prompt("Paste in your save here.\nWill overwrite your current save!"))
   if (loadgame!="") {
     loadGame(loadgame)
+    saveGame()
   }
 }
 //end
