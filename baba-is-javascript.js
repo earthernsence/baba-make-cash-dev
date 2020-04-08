@@ -32,7 +32,7 @@ function reset() {
         kekespushed: 0,
         kekes: new Decimal(0),
         kekeCost: new Decimal(50),
-        multiplier: new Decimal(1)
+        multiplier: new Decimal(1),
     }
   }
 }
@@ -58,6 +58,10 @@ function loadGame(loadgame) {
       document.getElementById("character1-istext").style = style;
       document.getElementById("character1-heretext").style = style;
       document.getElementById("character1").style = style;
+      document.getElementsByClassName("kekeInfo1").style = style;
+      document.getElementsByClassName("kekeInfo2").style = style;
+      update()
+      formatShit()
     } catch (error) {
       console.log("GAME is BROKEN! Error at function loadGame() when parsing save string:\n" + error)
       return;
@@ -67,25 +71,72 @@ function loadGame(loadgame) {
 function initialize() {
   let loadgame = LZString.decompressFromBase64(localStorage.getItem("babamakecash-save"))
   if (loadgame != null) {
+    showTab("game")
     loadGame(loadgame)
     console.log("Got save from local storage...")
+
   }
 }
 //end
 
+//notations
+const scientific = new ADNotations.ScientificNotation();
+const engineering = new ADNotations.EngineeringNotation();
+const mixedScientific  = new ADNotations.MixedScientificNotation();
+const logarithm = new ADNotations.LogarithmNotation();
+const roman = new ADNotations.RomanNotation();
+const imperial = new ADNotations.ImperialNotation()
+let notation = scientific;
+
+// Notation buttons. You can do a similar thing with a dropdown, google up something like "HTML JS dropdown"
+document.getElementById("scientific").onclick = function() {
+  notation = scientific;
+}
+
+document.getElementById("engineering").onclick = function() {
+  notation = engineering;
+}
+
+
+document.getElementById("mixedScientific").onclick = function() {
+  notation = mixedScientific;
+}
+
+document.getElementById("logarithm").onclick = function() {
+  notation = logarithm;
+}
+
+document.getElementById("roman").onclick = function() {
+  notation = roman;
+}
+
+document.getElementById("imperial").onclick = function() {
+  notation = imperial;
+}
+//end
+
+//UI updating
+
+function formatShit() {
+  document.getElementById("cash_number").textContent = notation.format(game.cash, 2);
+  document.getElementById("kekeCost").textContent = notation.format(game.keke.kekeCost, 2);
+  document.getElementById("cashstat").textContent = notation.format(game.highestCash, 2);
+} // I'm sorry
+formatShit()
+
+function pluralize(word, amount) {
+  return amount.eq(1) ? word : (word + "s");
+}
 
 
 function update() {
   document.getElementById("cash_number").innerHTML = game.cash
   document.getElementById("kekeCost").innerHTML = game.keke.kekeCost
   document.getElementById("cashstat").innerHTML = game.highestCash
-  document.getElementById("kAmount").innerHTML = game.keke.kekes
-  document.getElementById("kMult").innerHTML = game.keke.multiplier
-  if (game.keke.kekes === 0 || game.keke.kekes.gt(1)) {
-document.getElementById("kekeName").innerHTML = "kekes"
-  } else {
-    document.getElementById("kekeName").innerHTML = "keke"
-  }
+  document.getElementById("kekeAmount").innerHTML = "You have " + game.keke.kekes + " " +pluralize("Keke", game.keke.kekes)
+  document.getElementById("kekeMultiplier").innerHTML = "x" + notation.formatUnder1000(game.keke.multiplier, 2)
+  document.getElementById("CPSCount").innerHTML = "you are getting " + notation.format(game.cashPerSecond, 2) + " cash per second"
+  formatShit()
 }
 
   if (screen.width < 900 || window.innerWidth < 900) {
@@ -100,6 +151,8 @@ document.getElementById("kekeName").innerHTML = "kekes"
   }
 
 update()
+
+//end
 
 //defining upgrades showing as none or some
 function checkIfCanShowThings() {
@@ -120,6 +173,8 @@ if (game.upgradesPurchased.includes("upgrade1") && game.cash >= 10) {
   document.getElementById("character1-istext").style="display:block";
   document.getElementById("character1-heretext").style="display:block";
   document.getElementById("character1").style="display:block";
+  document.getElementsByClassName("kekeInfo1").style = "display:block"
+  document.getElementsByClassName("kekeInfo2").style = "display:block"
   game.keke.unlocked = true
 }
 if (game.charactersHired.includes("keke")) { //keeps keke showing no matter what
@@ -128,6 +183,8 @@ if (game.charactersHired.includes("keke")) { //keeps keke showing no matter what
   document.getElementById("character1-istext").style="display:none";
   document.getElementById("character1-heretext").style="display:none";
   document.getElementById("character1").style="display:block";
+  document.getElementsByClassName("kekeInfo1").style = "display:block"
+  document.getElementsByClassName("kekeInfo2").style = "display:block"
 }
 }
 //end 
@@ -163,7 +220,7 @@ function hireKeke() { //keke hiring
       document.getElementById("kekeCost").innerHTML = game.keke.kekeCost
       game.cashPerSecond = game.cashPerSecond.add(2.5 * game.keke.multiplier);
       game.keke.kekes = game.keke.kekes.add(1)
-      game.keke.multiplier = game.keke.multiplier.multiply(1.1).floor();
+      game.keke.multiplier = game.keke.multiplier.multiply(1.1)
     }
   }
 }
@@ -187,9 +244,9 @@ game.cash = game.cash.add(2)
 
 //tabs
 function showTab(name) {
-	const tabs = document.getElementsByClassName("tab");
+	const tabs = document.getElementsByClassName("tabbtn");
 	for (let tab of tabs) { //The for basically says: "for each tab in tabs do this" - kajfik
-		tab.style.display = (tab.id === name) ?  "block" : "none";
+    tab.style.display = (tab.id === name) ?  "block" : "none";
 	}
 }
 //end
@@ -234,13 +291,14 @@ function copyStringToClipboard(str) {
     document.body.appendChild(el);
     copyToClipboard(el)
     document.body.removeChild(el);
-    alert("Copied to clipboard")
+    alert("Copied to clipboard and placed in the developer Console.")
 }
 
 
 function exportSave() {
-  var exportedSave = console.log(LZString.compressToBase64(JSON.stringify(game)))
-  return exportedSave;
+  var exportedSave = LZString.compressToBase64(JSON.stringify(game))
+  copyStringToClipboard(exportedSave)
+  console.log(exportedSave)
 }
 
 function importSave() {
@@ -250,6 +308,17 @@ function importSave() {
     loadGame(loadgame)
     saveGame()
   }
+}
+
+function resetSave() {
+ var resetCheck = prompt("are you sure you wish to delete your save? type 'SAVE is DELETE' to delete it!")
+if(resetCheck === "SAVE is DELETE") {
+localStorage.removeItem("babamakecash-save")
+initialize()
+} else {
+  saveGame()
+  return;
+}
 }
 //end
 

@@ -74,11 +74,6 @@ hr {
   height: 64px;
 }
 
-.tabbtn {
-  width: 76px;
-  height: 64px;
-}
-
 .upgrbutton {
   background-color: #111111;
   color: white;
@@ -86,9 +81,44 @@ hr {
   border-color: #36393f;
 }
 
-#upgrtable {
+#chartable {
   border-width: 2px;
   border-color: #36393f;
   text-align: center;
 }
 
+.kekeInfo1 {
+  position: absolute;
+  top:600px;
+}
+
+.kekeInfo2 {
+  position: absolute;
+  top:625px;
+}
+
+/* Tooltips */
+.TotalCPS {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted #363939;
+}
+
+/* Tooltip text */
+.TotalCPS .TotalCPSBreakdown {
+  visibility: hidden;
+  width: 120px;
+  background-color: #36393f;
+  color: #fff;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+  top: -5px;
+  left: 105%;
+  position: absolute;
+  z-index: 1;
+}
+
+.TotalCPS:hover .TotalCPSBreakdown {
+  visibility: visible;
+}

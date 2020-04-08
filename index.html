@@ -7,7 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" href="https://cdn.glitch.com/29eb5997-d999-4196-912c-7a6af127eaa2%2Ficon.jpg?v=1585477868689">
     <link rel="stylesheet" href="baba-is-css.css">
-    <script src="baba-is-broken-and-eternity.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/break_infinity.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@antimatter-dimensions/notations"></script>
     <script src="baba-is-javascript.js" defer></script>
     <script src="lzstring-min.js"></script>
   </head>  
@@ -19,8 +20,8 @@
     </div>
     <hr size="80">
     <center>
-      <img src="resources/game.gif" class="tabbtn" onclick="showTab('game')" id="gameTab"><img src="resources/stats.gif" class="tabbtn" onclick="showTab('stats')" id="statsTab"><img src="resources/option.gif" class="tabbtn" onclick="showTab('option')" id="optionsTab">
-      <div id="game" class="tab">
+      <img src="resources/game.gif" class="tab" onclick="showTab('game')" id="gameTab"><img src="resources/stats.gif" class="tab" onclick="showTab('stats')" id="statsTab"><img src="resources/option.gif" class="tab" onclick="showTab('option')" id="optionsTab">
+      <div id="game" class="tabbtn">
         <br>
         <img src="resources/gtextgreen.gif" class="tabtitle-gametab"><img src="resources/atextgreen.gif" class="tabtitle-gametab"><img src="resources/mtextgreen.gif" class="tabtitle-gametab"><img src="resources/etextgreen.gif" class="tabtitle-gametab">
         <br>
@@ -28,28 +29,58 @@
       <img src="https://cdn.glitch.com/29eb5997-d999-4196-912c-7a6af127eaa2%2Fbaba_has.gif?v=1585530441184">
       <p style="color: white; font-size: 62px"><a id="cash_number">0</a></p>
       <img src="https://cdn.glitch.com/29eb5997-d999-4196-912c-7a6af127eaa2%2Fcash_text.gif?v=1585531192259">
+    <br>
+      <div id="CPSCount" class="TotalCPS" style="color:white">you are getting X cash per second
+    <span id="CPSCountText" class="TotalCPSBreakdown">keke is generating X cash per second <br> multiplied by her multiplier of X, <br> you are getting X cash per second</span>
     </div>
+  </div>
       
     <hr size="32">
     <img src="https://cdn.glitch.com/29eb5997-d999-4196-912c-7a6af127eaa2%2Fcash_button.gif?v=1585535564759" onclick="moreCash()">
 <br>
   </center>
-  <table style="top: 100px; right: 0px; display:block" id="upgrtable">
     <div style="font-size: large;">Upgrades</div>
       <button style="display:block; top: 100px; left: 0px" id="upgrade1" onclick="purchaseUpgrade('upgrade1')" class="upgrbutton">Multiply CPC by 2. <br> Cost: 10 Cash</button>
-      </table>
-      <img src="resources/keketext.gif" alt="keke" height="50" width="50" id="character1-keketext" class="kekecharacter" style="display:none"> <img src="resources/istext.gif" alt="is" height="50" width="50" id="character1-istext" class="kekecharacter" style="display:none"> <img src="resources/heretext.gif" alt="here" height="50" width="50" id="character1-heretext" class="kekecharacter" style="display:none"> <br>
-    <img src="resources/keke.gif" alt="kekesit" height="100" width="100" id="character1" class="kekecharacter" style="display:none"> <div id="kekeAmount">You have <p id="kAmount">x</p> <p id="kekeName">kekes.</p></div><br><div id="kekeMultiplier">x<p id="kMult">X</p></div><button id="character1-button" class="kekecharacter"  style="display:none" onclick="hireKeke()"><text style="color:white">Hire</text> <text style="color:#e5533b">Keke.</text><br><text style="color:white">Cost: <p id="kekeCost">x</p> <text style="color:green">Cash</text></button>
-    </div>
-    <div id="stats" class="tab">
+      <table id="chartable">
+      <tr>
+        <td>
+          <img src="resources/keketext.gif" alt="keke" height="50" width="50" id="character1-keketext" class="kekecharacter" style="display:none"> <img src="resources/istext.gif" alt="is" height="50" width="50" id="character1-istext" class="kekecharacter" style="display:none"> <img src="resources/heretext.gif" alt="here" height="50" width="50" id="character1-heretext" class="kekecharacter" style="display:none">
+        </td>
+      </tr> 
+    <br>
+    <tr>
+      <td>
+        <img src="resources/keke.gif" alt="kekesit" height="100" width="100" id="character1" class="kekecharacter" style="display:none"></td>
+        <br>
+        </tr>
+        <tr>
+          <td>
+            <td><div id="kekeAmount" style="color:white; display: block" class="kekeInfo1">You have x <p id="kekeName" style="color:white">kekes.</p></div></td>
+        <div id="kekeMultiplier" style="color:white; display:block" class="kekeInfo2">xX</div>
+        </td>
+      </tr>
+        <tr>
+          <td>
+        <button id="character1-button" class="kekecharacter"  style="display:none" onclick="hireKeke()"><text style="color:white">Hire</text> <text style="color:#e5533b">Keke.</text><br><text style="color:white">Cost: <p id="kekeCost">x</p> <text style="color:green">Cash</text></button></td></tr>
+    </table>
+  </div>
+    <div id="stats" class="tabbtn">
       <div style="color:white; text-align: center">You have had, at most, <span id="cashstat">x</span> cash at a single time.</div>
     </div>
-    <div id="options" class="tab">
+    <div id="options" class="tabbtn">
       <div>options</div>
       <center>
       <img src="resources/savetext.gif" onClick="saveGame()">
       <img src="resources/import.gif" onClick="importSave()">
       <img src="resources/export.gif" onClick="exportSave()">
+      <img src="resources/resettext.gif" onClick="resetSave()">
+      <div style="color: white; text-align: center;">click to change notation</div>
+      <button id="scientific" class="notationButton">Scientific</button>
+      <button id="engineering" class="notationButton">Engineering</button>
+      <button id="mixedScientific" class="notationButton">Mixed Scientific</button>
+      <button id="logarithm" class="notationButton">Logarithm</button>
+      <button id="roman" class="notationButton">Roman</button>
+      <button id="imperial" class="notationButton">Imperial</button>
       </center>
     </div>
     <center>
