@@ -11,6 +11,32 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@antimatter-dimensions/notations"></script>
     <script src="baba-is-javascript.js" defer></script>
     <script src="lzstring-min.js"></script>
+    <style>
+      .TotalCPS {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted #363939;
+}
+
+/* Tooltip text */
+.TotalCPS .TotalCPSBreakdown {
+  visibility: hidden;
+  width: 120px;
+  background-color: #36393f;
+  color: #fff;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+  position: absolute;
+  z-index: 1;
+  top: -5px;
+  left: 105%;
+}
+
+.TotalCPS:hover .TotalCPSBreakdown {
+  visibility: visible;
+}
+    </style>
   </head>  
   <body onload="initialize()">
     <div id="topbar">

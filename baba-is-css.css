@@ -98,27 +98,3 @@ hr {
 }
 
 /* Tooltips */
-.TotalCPS {
-  position: relative;
-  display: inline-block;
-  border-bottom: 1px dotted #363939;
-}
-
-/* Tooltip text */
-.TotalCPS .TotalCPSBreakdown {
-  visibility: hidden;
-  width: 120px;
-  background-color: #36393f;
-  color: #fff;
-  text-align: center;
-  padding: 5px 0;
-  border-radius: 6px;
-  top: -5px;
-  left: 105%;
-  position: absolute;
-  z-index: 1;
-}
-
-.TotalCPS:hover .TotalCPSBreakdown {
-  visibility: visible;
-}
