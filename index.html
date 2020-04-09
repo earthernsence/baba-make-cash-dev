@@ -12,14 +12,14 @@
     <script src="baba-is-javascript.js" defer></script>
     <script src="lzstring-min.js"></script>
     <style>
-      .TotalCPS {
+      .CPSBreakdown {
   position: relative;
   display: inline-block;
   border-bottom: 1px dotted #363939;
 }
 
 /* Tooltip text */
-.TotalCPS .TotalCPSBreakdown {
+.CPSBreakdown .TotalCPSBreakdown {
   visibility: hidden;
   width: 120px;
   background-color: #36393f;
@@ -28,13 +28,16 @@
   padding: 5px 0;
   border-radius: 6px;
   position: absolute;
-  z-index: 1;
-  top: -5px;
-  left: 105%;
+  z-index: 2;
+  width: 120px;
+  top: 100%;
+  left: 50%;
+  margin-left: -60px; /* Use half of the width (120/2 = 60), to center the tooltip */
 }
 
-.TotalCPS:hover .TotalCPSBreakdown {
+.CPSBreakdown:hover .TotalCPSBreakdown {
   visibility: visible;
+  cursor: pointer;
 }
     </style>
   </head>  
@@ -56,15 +59,16 @@
       <p style="color: white; font-size: 62px"><a id="cash_number">0</a></p>
       <img src="https://cdn.glitch.com/29eb5997-d999-4196-912c-7a6af127eaa2%2Fcash_text.gif?v=1585531192259">
     <br>
-      <div id="CPSCount" class="TotalCPS" style="color:white">you are getting X cash per second
-    <span id="CPSCountText" class="TotalCPSBreakdown">keke is generating X cash per second <br> multiplied by her multiplier of X, <br> you are getting X cash per second</span>
     </div>
   </div>
-      
-    <hr size="32">
+      <hr size="32">
     <img src="https://cdn.glitch.com/29eb5997-d999-4196-912c-7a6af127eaa2%2Fcash_button.gif?v=1585535564759" onclick="moreCash()">
 <br>
-  </center>
+<div id="CPSCount" class="TotalCPS" style="color:white">you are getting x cash per second</div> <br>
+  <div class="CPSBreakdown" style="color:white">Breakdown
+    <span id="CPSCountText" class="TotalCPSBreakdown">keke is generating X cash per second <br> multiplied by her multiplier of X, <br> you are getting X cash per second</span>
+  </div>
+</center>
     <div style="font-size: large;">Upgrades</div>
       <button style="display:block; top: 100px; left: 0px" id="upgrade1" onclick="purchaseUpgrade('upgrade1')" class="upgrbutton">Multiply CPC by 2. <br> Cost: 10 Cash</button>
       <table id="chartable">
@@ -93,7 +97,7 @@
     <div id="stats" class="tabbtn">
       <div style="color:white; text-align: center">You have had, at most, <span id="cashstat">x</span> cash at a single time.</div>
     </div>
-    <div id="options" class="tabbtn">
+    <div id="option" class="tabbtn">
       <div>options</div>
       <center>
       <img src="resources/savetext.gif" onClick="saveGame()">
@@ -109,8 +113,6 @@
       <button id="imperial" class="notationButton">Imperial</button>
       </center>
     </div>
-    <center>
     <a href="credits.html" style="position: fixed; right: 0px; top: 900px">Credits</a>
-    </center>
   </body>
 </html>
