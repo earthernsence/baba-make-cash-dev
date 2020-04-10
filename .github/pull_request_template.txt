@@ -7,4 +7,4 @@ Changes:
 - 
 
 @earthernsence
-(keep the mention: i'll get the notification and then will review the code and merge if it's good)
+(keep the mention: i'll get the notification and then will review the code and merge if it's good.)
