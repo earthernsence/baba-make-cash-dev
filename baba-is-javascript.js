@@ -122,6 +122,7 @@ function formatShit() {
   document.getElementById("kekeCost").textContent = notation.format(game.keke.kekeCost, 2);
   document.getElementById("cashstat").textContent = notation.format(game.highestCash, 2);
 } // I'm sorry
+// this function is entirely redundant i just wanted to have this
 formatShit()
 
 function pluralize(word, amount) {

@@ -87,6 +87,14 @@ hr {
   text-align: center;
 }
 
+#upgrtable {
+  border-width: 2px;
+  border-color: #36393f;
+  text-align: center;
+  top:50px;
+  right:0px;
+}
+
 .kekeInfo1 {
   position: absolute;
   top:600px;

@@ -62,15 +62,31 @@
     </div>
   </div>
       <hr size="32">
-    <img src="https://cdn.glitch.com/29eb5997-d999-4196-912c-7a6af127eaa2%2Fcash_button.gif?v=1585535564759" onclick="moreCash()">
+    <img src="https://cdn.glitch.com/29eb5997-d999-4196-912c-7a6af127eaa2%2Fcash_button.gif?v=1585535564759" onClick="moreCash()">
 <br>
 <div id="CPSCount" class="TotalCPS" style="color:white">you are getting x cash per second</div> <br>
   <div class="CPSBreakdown" style="color:white">Breakdown
     <span id="CPSCountText" class="TotalCPSBreakdown">keke is generating X cash per second <br> multiplied by her multiplier of X, <br> you are getting X cash per second</span>
   </div>
 </center>
-    <div style="font-size: large;">Upgrades</div>
-      <button style="display:block; top: 100px; left: 0px" id="upgrade1" onclick="purchaseUpgrade('upgrade1')" class="upgrbutton">Multiply CPC by 2. <br> Cost: 10 Cash</button>
+
+<!--upgrade table appears in the top right corner (hopefully) and will contain all upgrades.-->
+
+<table id="upgrtable">
+  <tr>
+    <td>
+      <div style="font-size: large; top:50px; left:0px; color:white">Upgrades</div>
+    </td>
+  </tr>
+  <tr>
+      <td>
+        <button style="display:block; top: 100px; left: 0px" id="upgrade1" onclick="purchaseUpgrade('upgrade1')" class="upgrbutton">Multiply CPC by 2. <br> Cost: 10 Cash</button>
+      </td>
+    </tr>
+    </table>
+      
+      <!--character table is used for having each character display *correctly*-->
+      
       <table id="chartable">
       <tr>
         <td>
