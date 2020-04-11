@@ -60,7 +60,6 @@
       <img src="https://cdn.glitch.com/29eb5997-d999-4196-912c-7a6af127eaa2%2Fcash_text.gif?v=1585531192259">
     <br>
     </div>
-  </div>
       <hr size="32">
     <img src="https://cdn.glitch.com/29eb5997-d999-4196-912c-7a6af127eaa2%2Fcash_button.gif?v=1585535564759" onClick="moreCash()">
 <br>
@@ -71,7 +70,6 @@
 </center>
 
 <!--upgrade table appears in the top right corner (hopefully) and will contain all upgrades.-->
-
 <table id="upgrtable">
   <tr>
     <td>
@@ -80,7 +78,7 @@
   </tr>
   <tr>
       <td>
-        <button style="display:block; top: 100px; left: 0px" id="upgrade1" onclick="purchaseUpgrade('upgrade1')" class="upgrbutton">Multiply CPC by 2. <br> Cost: 10 Cash</button>
+        <button style="display:block; top: 100px; left: 0px" id="upgrade1" onClick="purchaseUpgrade('upgrade1')" class="upgrbutton">Multiply CPC by 2. <br> Cost: 10 Cash</button>
       </td>
     </tr>
     </table>
@@ -110,6 +108,8 @@
         <button id="character1-button" class="kekecharacter"  style="display:none" onclick="hireKeke()"><text style="color:white">Hire</text> <text style="color:#e5533b">Keke.</text><br><text style="color:white">Cost: <p id="kekeCost">x</p> <text style="color:green">Cash</text></button></td></tr>
     </table>
   </div>
+  </div>
+
     <div id="stats" class="tabbtn">
       <div style="color:white; text-align: center">You have had, at most, <span id="cashstat">x</span> cash at a single time.</div>
     </div>
