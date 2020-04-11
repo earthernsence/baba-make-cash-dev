@@ -61,7 +61,7 @@ function loadGame(loadgame) {
       document.getElementsByClassName("kekeInfo1").style = style;
       document.getElementsByClassName("kekeInfo2").style = style;
       update()
-      formatShit()
+      formatThings()
     } catch (error) {
       console.log("GAME is BROKEN! Error at function loadGame() when parsing save string:\n" + error)
       return;
@@ -117,13 +117,13 @@ document.getElementById("imperial").onclick = function() {
 
 //UI updating
 
-function formatShit() {
+function formatThings() {
   document.getElementById("cash_number").textContent = notation.format(game.cash, 2);
   document.getElementById("kekeCost").textContent = notation.format(game.keke.kekeCost, 2);
   document.getElementById("cashstat").textContent = notation.format(game.highestCash, 2);
 } // I'm sorry
 // this function is entirely redundant i just wanted to have this
-formatShit()
+formatThings()
 
 function pluralize(word, amount) {
   return amount.eq(1) ? word : (word + "s");
@@ -137,7 +137,7 @@ function update() {
   document.getElementById("kekeAmount").innerHTML = "You have " + game.keke.kekes + " " +pluralize("Keke", game.keke.kekes)
   document.getElementById("kekeMultiplier").innerHTML = "x" + notation.formatUnder1000(game.keke.multiplier, 2)
   document.getElementById("CPSCount").innerHTML = "you are getting " + notation.format(game.cashPerSecond, 2) + " cash per second"
-  formatShit()
+  formatThings()
 }
 
   if (screen.width < 900 || window.innerWidth < 900) {
