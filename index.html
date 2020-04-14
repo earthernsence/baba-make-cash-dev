@@ -18,10 +18,14 @@
   border-bottom: 1px dotted #363939;
 }
 
+.CPSBreakdown:hover {
+  cursor: pointer
+}
+
 /* Tooltip text */
 .CPSBreakdown .TotalCPSBreakdown {
   visibility: hidden;
-  width: 120px;
+  width: 150px;
   background-color: #36393f;
   color: #fff;
   text-align: center;
@@ -37,11 +41,10 @@
 
 .CPSBreakdown:hover .TotalCPSBreakdown {
   visibility: visible;
-  cursor: pointer;
 }
     </style>
   </head>  
-  <body onload="initialize()">
+  <body onLoad="initialize()">
     <div id="topbar">
       <img id="title" src="https://cdn.glitch.com/29eb5997-d999-4196-912c-7a6af127eaa2%2Ftitle.gif?v=1585476258250">       
     </div>
@@ -85,7 +88,7 @@
       
       <!--character table is used for having each character display *correctly*-->
       
-      <table id="chartable">
+      <table id="chartable" style="display:block">
       <tr>
         <td>
           <img src="resources/keketext.gif" alt="keke" height="50" width="50" id="character1-keketext" class="kekecharacter" style="display:none"> <img src="resources/istext.gif" alt="is" height="50" width="50" id="character1-istext" class="kekecharacter" style="display:none"> <img src="resources/heretext.gif" alt="here" height="50" width="50" id="character1-heretext" class="kekecharacter" style="display:none">
@@ -99,13 +102,18 @@
         </tr>
         <tr>
           <td>
-            <td><div id="kekeAmount" style="color:white; display: block" class="kekeInfo1">You have x <p id="kekeName" style="color:white">kekes.</p></div></td>
+            <div id="kekeAmount" style="color:white; display: block" class="kekeInfo1">You have x <p id="kekeName" style="color:white">kekes.</p></div>
+            </td>
+            <tr>
+            <td>
         <div id="kekeMultiplier" style="color:white; display:block" class="kekeInfo2">xX</div>
         </td>
-      </tr>
+        </tr>
         <tr>
           <td>
-        <button id="character1-button" class="kekecharacter"  style="display:none" onclick="hireKeke()"><text style="color:white">Hire</text> <text style="color:#e5533b">Keke.</text><br><text style="color:white">Cost: <p id="kekeCost">x</p> <text style="color:green">Cash</text></button></td></tr>
+        <button id="character1-button" class="kekecharacter"  style="display:none" onclick="hireKeke()"><text style="color:white">Hire</text> <text style="color:#e5533b">Keke.</text><br><text style="color:white">Cost: <p id="kekeCost">x</p> <text style="color:green">Cash</text></button>
+      </td>
+    </tr>
     </table>
   </div>
   </div>
@@ -130,10 +138,12 @@
       <br>
       <div style="color:white">experimental! baba is you music. will eventually have it play different tracks depending on progress</div>
       <br>
-      <audio controls loop>
+      <audio controls autoplay loop>
         <source src="resources/menu.ogg" type="audio/ogg">
-      Your browser does not support the audio element.
+          sorry, your browser does not support the audio used in this webpage.
       </audio>
+      <!--<audio autoplay="autoplay" loop="loop" src="resources/menu.ogg" type="audio/ogg"></audio>
+      <audio id="babaMusic" loop="loop" autoplay="autoplay" src="resources/menu.ogg"></audio> -->
       </center>
     </div>
     <a href="credits.html" style="position: fixed; right: 0px; top: 900px">Credits</a>

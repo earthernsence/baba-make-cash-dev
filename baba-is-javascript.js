@@ -10,13 +10,16 @@ let keke
     upgradesPurchased: [],
     charactersHired: [],
     cashPerSecond: new Decimal(0),
+    tab: "game",
       keke: {
         kekespushed: 0,
         kekes: new Decimal(0),
         kekeCost: new Decimal(50),
         multiplier: new Decimal(1),
+        cashPerSecond: new Decimal(0),
     }
   }
+
 
 
 //init function
@@ -27,12 +30,14 @@ function reset() {
     upgradesPurchased: [],
     charactersHired: [],
     cashPerSecond: new Decimal(0),
+    tab: "game",
       keke: {
         unlocked: false,
         kekespushed: 0,
         kekes: new Decimal(0),
         kekeCost: new Decimal(50),
         multiplier: new Decimal(1),
+        cashPerSecond: new Decimal(0),
     }
   }
 }
@@ -44,6 +49,7 @@ function unDecimalifySave() {
   game.keke.kekes = new Decimal(game.keke.kekes)
   game.keke.kekeCost = new Decimal(game.keke.kekeCost)
   game.keke.multiplier= new Decimal(game.keke.multiplier)
+  game.keke.cashPerSecond = new Decimal(game.keke.cashPerSecond)
 }
 
 function loadGame(loadgame) {
@@ -60,6 +66,7 @@ function loadGame(loadgame) {
       document.getElementById("character1").style = style;
       document.getElementsByClassName("kekeInfo1").style = style;
       document.getElementsByClassName("kekeInfo2").style = style;
+      document.getElementsByClassName("CPSBreakdown").style = style;
       update()
       formatThings()
     } catch (error) {
@@ -74,7 +81,6 @@ function initialize() {
     showTab("game")
     loadGame(loadgame)
     console.log("Got save from local storage...")
-
   }
 }
 //end
@@ -129,14 +135,24 @@ function pluralize(word, amount) {
   return amount.eq(1) ? word : (word + "s");
 }
 
+function showID(id, condition) {
+  try {
+    document.getElementById(id).style.display = condition ? "block" : "none";
+  } catch(error) {
+    console.log("Wrong ID: " + id + "\n" + error);
+  }
+}
+
 
 function update() {
+  let totalCPS = game.cashPerSecond.multiply(game.keke.multiplier)
   document.getElementById("cash_number").innerHTML = game.cash
   document.getElementById("kekeCost").innerHTML = game.keke.kekeCost
   document.getElementById("cashstat").innerHTML = game.highestCash
   document.getElementById("kekeAmount").innerHTML = "You have " + game.keke.kekes + " " +pluralize("Keke", game.keke.kekes)
-  document.getElementById("kekeMultiplier").innerHTML = "x" + notation.formatUnder1000(game.keke.multiplier, 2)
-  document.getElementById("CPSCount").innerHTML = "you are getting " + notation.format(game.cashPerSecond, 2) + " cash per second"
+  document.getElementById("kekeMultiplier").innerHTML = "x" + notation.format(game.keke.multiplier, 2, 2)
+  document.getElementById("CPSCount").innerHTML = "you are getting " + notation.format(totalCPS, 2, 2) + " cash per second"
+  document.getElementById("CPSCountText").innerHTML = "keke is generating " + notation.format(game.keke.cashPerSecond, 2, 1) + " cash per second <br> mutliplied by her multiplier of " + notation.format(game.keke.multiplier, 2, 2) + ", you are getting " + notation.format(totalCPS, 2, 2) + " cash per second."
   formatThings()
 }
 
@@ -157,35 +173,41 @@ update()
 
 //defining upgrades showing as none or some
 function checkIfCanShowThings() {
-if (game.cash >= 10) { // for upgrade1
-document.getElementById("upgrade1").style="display:block";
-document.getElementById("")
+  // show("upgrade1", true)
+ if (game.cash >= 10) { // for upgrade1
+showID("upgrade1", true)
 } else {
-   document.getElementById("upgrade1").style="display:none"
+   showID("upgrade1", false)
 }
 //completely removes upgrade1 from showing
   if (game.upgradesPurchased.includes("upgrade1")) {
-     document.getElementById("upgrade1").style="display:none"
+    showID("upgrade1", false)
   }
 //kekecharacter show/hide if
+
+function showAllKekeThings() {
+  showID("character1-button", true)
+  showID("character1-keketext", true)
+  showID("character1-istext", true)
+  showID("character1-heretext", true)
+  showID("character1", true)
+  showID("kekeAmount", true)
+  showID("kekeMultiplier", true)
+}
+
 if (game.upgradesPurchased.includes("upgrade1") && game.cash >= 10) {
-  document.getElementById("character1-button").style="display:block";
-  document.getElementById("character1-keketext").style="display:block";
-  document.getElementById("character1-istext").style="display:block";
-  document.getElementById("character1-heretext").style="display:block";
-  document.getElementById("character1").style="display:block";
-  document.getElementsByClassName("kekeInfo1").style = "display:block"
-  document.getElementsByClassName("kekeInfo2").style = "display:block"
+  showAllKekeThings()
   game.keke.unlocked = true
 }
 if (game.charactersHired.includes("keke")) { //keeps keke showing no matter what
-  document.getElementById("character1-button").style="display:block";
-  document.getElementById("character1-keketext").style="display:block";
-  document.getElementById("character1-istext").style="display:none";
-  document.getElementById("character1-heretext").style="display:none";
-  document.getElementById("character1").style="display:block";
-  document.getElementsByClassName("kekeInfo1").style = "display:block"
-  document.getElementsByClassName("kekeInfo2").style = "display:block"
+  showID("character1-button", true)
+  showID("character1-keketext", true)
+  showID("character1-istext", false)
+  showID("character1-heretext", false)
+  showID("character1", true)
+  showID("kekeAmount", true)
+  showID("kekeMultiplier", true)
+  document.getElementsByClassName("CPSBreakdown").style.display = "block"
 }
 }
 //end 
@@ -203,12 +225,36 @@ function purchaseUpgrade(id) {
   game.upgradesPurchased.push(id); //used because it doesnt work by itself in html?
  if (game.upgradesPurchased.includes("upgrade1")) {
   game.cash = game.cash.minus(10);
-document.getElementById("upgrade1").style="display:none";
+showID("upgrade1", false)
 }
 }
 //end
 
 //how characters are hired
+function canBuyKeke() {
+  return game.upgradesPurchased.includes("upgrade1") && game.cash >= 10;
+}
+
+function isKekeHired() {
+  return game.charactersHired.includes("keke");
+}
+
+function getCurrentTab() {
+  return game.tab
+}
+
+function updateKeke() {
+  let kekeShown = getCurrentTab() === "game" && (canBuyKeke() || isKekeHired());
+  document.getElementById("chartable").style = kekeShown ? "display:block" : "display:none";
+}
+function updateCharacters() {
+  updateKeke();
+  // .. updateMe() etc or in the future something like:
+}
+function updateUI() {
+  updateCharacters();
+  checkIfCanShowThings()
+}
 function hireKeke() { //keke hiring
   if (game.cash.gte(game.keke.kekeCost)) {
     if (game.keke.kekespushed < 1) {
@@ -219,9 +265,12 @@ function hireKeke() { //keke hiring
       game.cash = game.cash.minus(game.keke.kekeCost);
       game.keke.kekeCost = game.keke.kekeCost.multiply(1.25).floor();
       document.getElementById("kekeCost").innerHTML = game.keke.kekeCost
-      game.cashPerSecond = game.cashPerSecond.add(2.5 * game.keke.multiplier);
-      game.keke.kekes = game.keke.kekes.add(1)
-      game.keke.multiplier = game.keke.multiplier.multiply(1.1)
+      //game.cashPerSecond = game.cashPerSecond.add(2.5 * game.keke.multiplier);
+      game.keke.cashPerSecond = game.keke.cashPerSecond.add(2.5);
+      game.cashPerSecond = game.cashPerSecond.add(2.5)
+      game.keke.kekes = game.keke.kekes.add(1);
+      game.keke.multiplier = game.keke.multiplier.multiply(1.1);
+      updateKeke()
     }
   }
 }
@@ -229,7 +278,7 @@ function hireKeke() { //keke hiring
 
 //when you get a character, say, keke, this function is the one generating CPS
 function addCPS() {
-game.cash = game.cash.add(game.cashPerSecond)
+game.cash = game.cash.add(game.cashPerSecond.multiply(game.keke.multiplier))
 }
 //end
 
@@ -248,6 +297,7 @@ function showTab(name) {
 	const tabs = document.getElementsByClassName("tabbtn");
 	for (let tab of tabs) { //The for basically says: "for each tab in tabs do this" - kajfik
     tab.style.display = (tab.id === name) ?  "block" : "none";
+    game.tab = name
 	}
 }
 //end
@@ -325,7 +375,7 @@ initialize()
 
 //running functions 
 setInterval(update, 10)
-setInterval(checkIfCanShowThings, 10)
+setInterval(updateUI, 10)
 setInterval(checkIfHighestCanBeIncremented, 10)
 setInterval(addCPS, 1000)
 setInterval(saveGame, 10000)
