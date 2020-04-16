@@ -33,10 +33,10 @@
   border-radius: 6px;
   position: absolute;
   z-index: 2;
-  width: 120px;
+  width: 200px;
   top: 100%;
   left: 50%;
-  margin-left: -60px; /* Use half of the width (120/2 = 60), to center the tooltip */
+  margin-left: -100px; /* Use half of the width (120/2 = 60), to center the tooltip */
 }
 
 .CPSBreakdown:hover .TotalCPSBreakdown {
@@ -67,7 +67,7 @@
     <img src="https://cdn.glitch.com/29eb5997-d999-4196-912c-7a6af127eaa2%2Fcash_button.gif?v=1585535564759" onClick="moreCash()">
 <br>
 <div id="CPSCount" class="TotalCPS" style="color:white">you are getting x cash per second</div> <br>
-  <div class="CPSBreakdown" style="color:white">Breakdown
+  <div class="CPSBreakdown" style="color:white" id="TotalCPSBreakdownText">Breakdown
     <span id="CPSCountText" class="TotalCPSBreakdown">keke is generating X cash per second <br> multiplied by her multiplier of X, <br> you are getting X cash per second</span>
   </div>
 </center>
@@ -81,7 +81,17 @@
   </tr>
   <tr>
       <td>
-        <button style="display:block; top: 100px; left: 0px" id="upgrade1" onClick="purchaseUpgrade('upgrade1')" class="upgrbutton">Multiply CPC by 2. <br> Cost: 10 Cash</button>
+        <button style="display:block; top: 100px; left: 0px" id="upgrade1" onClick="purchaseUpgrade('upgrade1')" class="upgrbutton">Multiply Cash per Click (CPC) by 2. <br> Cost: 10 Cash</button>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <button style="display:block; top: 125px; left: 0px" id="upgrade2" onClick="purchaseUpgrade('upgrade2')" class="upgrbutton">Multiply Cash per Second (CPS) by 2. <br> Cost: 500 Cash</button>
+      </td>
+    </tr>
+    <tr> 
+      <td>
+        <button style="display:block; top: 150px; left: 0px" id="upgrade3" onClick="purchaseUpgrade('upgrade3')" class="upgrbutton">Multiply CPS by X%, where X is how many Kekes you have.<br> Cost: 50000 Cash</button>
       </td>
     </tr>
     </table>
