@@ -2,6 +2,7 @@
 
 let game
 let keke
+let upgrade
 
 
   game = {
@@ -11,12 +12,16 @@ let keke
     charactersHired: [],
     cashPerSecond: new Decimal(0),
     tab: "game",
+    version: 2,
       keke: {
         kekespushed: 0,
         kekes: new Decimal(0),
         kekeCost: new Decimal(50),
         multiplier: new Decimal(1),
         cashPerSecond: new Decimal(0),
+    },
+    upgrade: {
+      multiplier3: new Decimal(1),
     }
   }
 
@@ -31,6 +36,7 @@ function reset() {
     charactersHired: [],
     cashPerSecond: new Decimal(0),
     tab: "game",
+    version: 2, 
       keke: {
         unlocked: false,
         kekespushed: 0,
@@ -38,6 +44,9 @@ function reset() {
         kekeCost: new Decimal(50),
         multiplier: new Decimal(1),
         cashPerSecond: new Decimal(0),
+    },
+    upgrade: {
+      multiplier3: new Decimal(1)
     }
   }
 }
@@ -50,12 +59,32 @@ function unDecimalifySave() {
   game.keke.kekeCost = new Decimal(game.keke.kekeCost)
   game.keke.multiplier= new Decimal(game.keke.multiplier)
   game.keke.cashPerSecond = new Decimal(game.keke.cashPerSecond)
+  game.upgrade.multiplier3 = new Decimal(game.upgrade.multiplier3)
+}
+
+function fixUndefined() {
+  if (game.upgrade === undefined) game.upgrade = { multiplier3: new Decimal(1) }
+  if (game.version === undefined) game.version = 1
+  unDecimalifySave()
+}
+
+function versionCheck() {
+  if (game.version < 2) {
+    if (!game.upgrade) game.upgrade = {multiplier3: new Decimal(1),};
+    game.version = 2
+    unDecimalifySave()
+  }
 }
 
 function loadGame(loadgame) {
+  fixUndefined()
+  versionCheck()
+  unDecimalifySave()
     reset()
     try {
       game = JSON.parse(loadgame)
+      fixUndefined()
+      versionCheck()
       unDecimalifySave()
   
       let style = game.keke.unlocked ? "display:block" : "display:none";
@@ -94,6 +123,9 @@ const roman = new ADNotations.RomanNotation();
 const imperial = new ADNotations.ImperialNotation()
 let notation = scientific;
 
+function changeToADifferentNotation(id) {
+  notation = id;
+}
 // Notation buttons. You can do a similar thing with a dropdown, google up something like "HTML JS dropdown"
 document.getElementById("scientific").onclick = function() {
   notation = scientific;
@@ -145,14 +177,21 @@ function showID(id, condition) {
 
 
 function update() {
-  let totalCPS = game.cashPerSecond.multiply(game.keke.multiplier)
-  document.getElementById("cash_number").innerHTML = game.cash
-  document.getElementById("kekeCost").innerHTML = game.keke.kekeCost
-  document.getElementById("cashstat").innerHTML = game.highestCash
-  document.getElementById("kekeAmount").innerHTML = "You have " + game.keke.kekes + " " +pluralize("Keke", game.keke.kekes)
-  document.getElementById("kekeMultiplier").innerHTML = "x" + notation.format(game.keke.multiplier, 2, 2)
-  document.getElementById("CPSCount").innerHTML = "you are getting " + notation.format(totalCPS, 2, 2) + " cash per second"
-  document.getElementById("CPSCountText").innerHTML = "keke is generating " + notation.format(game.keke.cashPerSecond, 2, 1) + " cash per second <br> mutliplied by her multiplier of " + notation.format(game.keke.multiplier, 2, 2) + ", you are getting " + notation.format(totalCPS, 2, 2) + " cash per second."
+  document.getElementById("cash_number").textContent = game.cash
+  document.getElementById("kekeCost").textContent = game.keke.kekeCost
+  document.getElementById("cashstat").textContent = game.highestCash
+  document.getElementById("kekeAmount").textContent = "You have " + game.keke.kekes + " " +pluralize("Keke", game.keke.kekes)
+  document.getElementById("kekeMultiplier").textContent = "x" + notation.format(game.keke.multiplier, 2, 2)
+  document.getElementById("CPSCount").textContent = "you are getting " + notation.format(game.cashPerSecond.multiply(getTotalMultiplier()), 2, 2) + " cash per second"
+  if (!game.upgradesPurchased.includes("upgrade2")) {
+  document.getElementById("CPSCountText").innerHTML = "keke is generating " + notation.format(game.keke.cashPerSecond, 2, 1) + " cash per second <br> mutliplied by her multiplier of " + notation.format(game.keke.multiplier, 2, 2) + ", you are getting " + notation.format(game.cashPerSecond.multiply(getTotalMultiplier()), 2, 2)  + " cash per second."
+  } else if (game.upgradesPurchased.includes("upgrade2")) {
+    document.getElementById("CPSCountText").innerHTML = "keke is generating " + notation.format(game.keke.cashPerSecond, 2, 1) + " cash per second <br> mutliplied by her multiplier of " + notation.format(game.keke.multiplier, 2, 2) + ", multiplied by the second upgrade's multiplier of 2, you are getting " + notation.format(game.cashPerSecond.multiply(getTotalMultiplier()), 2, 2)  + " cash per second."
+  } else if (game.upgrade.multiplier3.gt(1)) {
+    document.getElementById("CPSCountText").innerHTML = "keke is generating " + notation.format(game.keke.cashPerSecond, 2, 1) + " cash per second <br> mutliplied by her multiplier of " + notation.format(game.keke.multiplier, 2, 2) + ", multiplied by the second upgrade's multiplier of 2, multiplied by the third upgrade's multiplier of " + notation.format(game.upgrade.multiplier3, 2, 2) + " you are getting " + notation.format(game.cashPerSecond.multiply(getTotalMultiplier()), 2, 2)  + " cash per second."
+  } else {
+    document.getElementById("CPSCountText").innerHTML = "haha fuck you <br> if you're seeing this, something went desparately wrong"
+  }
   formatThings()
 }
 
@@ -179,9 +218,26 @@ showID("upgrade1", true)
 } else {
    showID("upgrade1", false)
 }
-//completely removes upgrade1 from showing
-  if (game.upgradesPurchased.includes("upgrade1")) {
+if (game.cash.gte(100) && game.keke.kekes.gte(4)) { // for upgrade2
+  showID("upgrade2", true)
+} else {
+  showID("upgrade2", false)
+}
+if (game.cash.gte(10000) && game.upgradesPurchased.includes("upgrade2")) {
+  showID("upgrade3", true)
+} else {
+  showID("upgrade3", false)
+}
+
+//completely removes upgrades from showing
+  if (game.upgradesPurchased.includes("upgrade1") && game.cash >= 10) {
     showID("upgrade1", false)
+  }
+  if (game.upgradesPurchased.includes("upgrade2")) {
+    showID("upgrade2", false)
+  }
+  if (game.upgradesPurchased.includes("upgrade3")) {
+    showID("upgrade3", false)
   }
 //kekecharacter show/hide if
 
@@ -198,6 +254,7 @@ function showAllKekeThings() {
 if (game.upgradesPurchased.includes("upgrade1") && game.cash >= 10) {
   showAllKekeThings()
   game.keke.unlocked = true
+  showID("upgrade1", false)
 }
 if (game.charactersHired.includes("keke")) { //keeps keke showing no matter what
   showID("character1-button", true)
@@ -207,7 +264,7 @@ if (game.charactersHired.includes("keke")) { //keeps keke showing no matter what
   showID("character1", true)
   showID("kekeAmount", true)
   showID("kekeMultiplier", true)
-  document.getElementsByClassName("CPSBreakdown").style.display = "block"
+  showID("TotalCPSBreakdownText", true)
 }
 }
 //end 
@@ -226,6 +283,14 @@ function purchaseUpgrade(id) {
  if (game.upgradesPurchased.includes("upgrade1")) {
   game.cash = game.cash.minus(10);
 showID("upgrade1", false)
+}
+if (game.upgradesPurchased.includes("upgrade2")) {
+  game.cash = game.cash.minus(500)
+  showID("upgrade2", false)
+}
+if (game.upgradesPurchased.includes("upgrade3")) {
+  game.cash.minus(50000)
+  showID("upgrade3", false)
 }
 }
 //end
@@ -264,21 +329,36 @@ function hireKeke() { //keke hiring
     if (game.keke.kekespushed == 1) {
       game.cash = game.cash.minus(game.keke.kekeCost);
       game.keke.kekeCost = game.keke.kekeCost.multiply(1.25).floor();
-      document.getElementById("kekeCost").innerHTML = game.keke.kekeCost
+      document.getElementById("kekeCost").textContent = game.keke.kekeCost
       //game.cashPerSecond = game.cashPerSecond.add(2.5 * game.keke.multiplier);
       game.keke.cashPerSecond = game.keke.cashPerSecond.add(2.5);
       game.cashPerSecond = game.cashPerSecond.add(2.5)
       game.keke.kekes = game.keke.kekes.add(1);
       game.keke.multiplier = game.keke.multiplier.multiply(1.1);
+      game.upgrade.multiplier3 = game.upgrade.multiplier3.plus(0.01)
       updateKeke()
     }
   }
 }
 //end
-
+function getTotalMultiplier() {
+  /*if (game.upgradesPurchased.includes("upgrade2")) {
+  return game.keke.multiplier.multiply(2)
+  } else if (!game.upgradesPurchased.includes("upgrade2") && game.upgrade.multiplier3.lte(1)) {
+    return game.keke.multiplier
+  } else if (game.upgradesPurchased.includes("upgrade2") && game.upgrade.multiplier3.gt(1)) {
+    return game.keke.multiplier.multiply(2).multiply(game.upgrade.multiplier3)
+  }*/
+  let mult = new Decimal(1)
+  if (game.keke.kekes.gt(1)) mult = mult.mul(game.keke.multiplier)
+  if (game.upgradesPurchased.includes("upgrade2")) mult = mult.mul(2)
+  if (game.upgradesPurchased.includes("upgrade3")) mult = mult.mul(game.upgrade.multiplier3)
+  return mult
+}
 //when you get a character, say, keke, this function is the one generating CPS
 function addCPS() {
-game.cash = game.cash.add(game.cashPerSecond.multiply(game.keke.multiplier))
+  let totalMultiplier = getTotalMultiplier()
+game.cash = game.cash.add(game.cashPerSecond.multiply(totalMultiplier))
 }
 //end
 
