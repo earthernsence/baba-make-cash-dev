@@ -12,7 +12,7 @@
     <script src="baba-is-javascript.js" defer></script>
     <script src="lzstring-min.js"></script>
     <style>
-      .CPSBreakdown {
+      #TotalCPSBreakdownText {
   position: relative;
   display: inline-block;
   border-bottom: 1px dotted #363939;
@@ -33,10 +33,10 @@
   border-radius: 6px;
   position: absolute;
   z-index: 2;
-  width: 120px;
+  width: 250px;
   top: 100%;
   left: 50%;
-  margin-left: -60px; /* Use half of the width (120/2 = 60), to center the tooltip */
+  margin-left: -125px; /* Use half of the width (250/2 = 125), to center the tooltip */
 }
 
 .CPSBreakdown:hover .TotalCPSBreakdown {
@@ -67,7 +67,7 @@
     <img src="https://cdn.glitch.com/29eb5997-d999-4196-912c-7a6af127eaa2%2Fcash_button.gif?v=1585535564759" onClick="moreCash()">
 <br>
 <div id="CPSCount" class="TotalCPS" style="color:white">you are getting x cash per second</div> <br>
-  <div class="CPSBreakdown" style="color:white">Breakdown
+  <div class="CPSBreakdown" style="color:white" id="TotalCPSBreakdownText">Breakdown
     <span id="CPSCountText" class="TotalCPSBreakdown">keke is generating X cash per second <br> multiplied by her multiplier of X, <br> you are getting X cash per second</span>
   </div>
 </center>
@@ -81,7 +81,22 @@
   </tr>
   <tr>
       <td>
-        <button style="display:block; top: 100px; left: 0px" id="upgrade1" onClick="purchaseUpgrade('upgrade1')" class="upgrbutton">Multiply CPC by 2. <br> Cost: 10 Cash</button>
+        <button style="display:block; top: 100px; left: 0px" id="upgrade1" onClick="purchaseUpgrade('upgrade1')" class="upgrbutton">Multiply Cash per Click (CPC) by 2. <br> Cost: 10 Cash</button>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <button style="display:block; top: 125px; left: 0px" id="upgrade2" onClick="purchaseUpgrade('upgrade2')" class="upgrbutton">Multiply Cash per Second (CPS) by 2. <br> Cost: 500 Cash</button>
+      </td>
+    </tr>
+    <tr> 
+      <td>
+        <button style="display:block; top: 150px; left: 0px" id="upgrade3" onClick="purchaseUpgrade('upgrade3')" class="upgrbutton">Multiply CPS by X%, where X is how many Kekes you have.<br> Cost: 50000 Cash</button>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <button style="display:block; top:175px; left: 0px" id="upgradeME" onClick="purchaseUpgrade('upgradeME')">Unlock and gain 1 ME.<br> Cost: 5e5 Cash.</button>
       </td>
     </tr>
     </table>
@@ -114,12 +129,43 @@
         <button id="character1-button" class="kekecharacter"  style="display:none" onclick="hireKeke()"><text style="color:white">Hire</text> <text style="color:#e5533b">Keke.</text><br><text style="color:white">Cost: <p id="kekeCost">x</p> <text style="color:green">Cash</text></button>
       </td>
     </tr>
+  </table>
+  <table>
+    <tr>
+      <br><br><br>
+      <td> <!--Me!-->
+        <img src="resources/metext.gif" alt="me" height="50" width="50" id="character2-metext" class="mecharacter" style="display:none"> <img src="resources/istext.gif" alt="is" height="50" width="50" id="character2-istext" class="mecharacter" style="display:none"> <img src="resources/heretext.gif" alt="here" height="50" width="50" id="character2-heretext" class="mecharacter" style="display:none">
+      </td>
+    </tr>
+    <br>
+    <tr>
+      <td>
+        <img src="resources/me.gif" alt="mesit" height="100" width="100" id="character2" class="mecharacter" style="display:none">
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div id="meAmount" style="color:white; display:block" class="meInfo1">You have x mes.</div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div id="meMultiplier" style="color:white; display:block" class="kekeInfo2">xX</div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <button id="character2-button" class="mecharacter" style="display:none" onClick="hireMe()"><text style="color:white">Hire</text> <text style="color: #8e5e9c">Me.</text><br><text style="color:white">Cost: <p id="meCost">x</p> <text style="color: green">Cash</text></button>
+      </td>
+    </tr>
     </table>
   </div>
   </div>
 
     <div id="stats" class="tabbtn">
       <div style="color:white; text-align: center">You have had, at most, <span id="cashstat">x</span> cash at a single time.</div>
+    <br>
+      <div style="color:white; text-align:center" id="BreakdownInStats">help</div>
     </div>
     <div id="option" class="tabbtn">
       <div>options</div>
@@ -129,6 +175,15 @@
       <img src="resources/export.gif" onClick="exportSave()">
       <img src="resources/resettext.gif" onClick="resetSave()">
       <div style="color: white; text-align: center;">click to change notation</div>
+      <!--<label for="notations">choose a notation</label>
+      <select id="notationPicker">
+        <option value="scientific" id="scientific" onClick="changeToADifferentNotation('scientific')">Scientific</option>
+        <option value="engineering" id="engineering" onClick="changeToADifferentNotation('engineering')">Engineering</option>
+        <option value="mixedScientific" id="mixedScientific" onClick="changeToADifferentNotation('mixedScientific')">Mixed Scientific</option>
+        <option value="logarithm" id="logarithm" onClick="changeToADifferentNotation('logarithm')">Logarithm</option>
+        <option value="roman" id="roman" onClick="changeToADifferentNotation('roman')">Roman</option>
+        <option value="imperial" id="imperial" onClick="changeToADifferentNotation('imperial')">Imperial</option>
+      </select>-->
       <button id="scientific" class="notationButton">Scientific</button>
       <button id="engineering" class="notationButton">Engineering</button>
       <button id="mixedScientific" class="notationButton">Mixed Scientific</button>
