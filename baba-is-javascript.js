@@ -2,6 +2,8 @@
 
 let game
 let keke
+let upgrade
+let me
 
 
   game = {
@@ -11,12 +13,27 @@ let keke
     charactersHired: [],
     cashPerSecond: new Decimal(0),
     tab: "game",
+    version: 2,
       keke: {
         kekespushed: 0,
         kekes: new Decimal(0),
         kekeCost: new Decimal(50),
         multiplier: new Decimal(1),
         cashPerSecond: new Decimal(0),
+        unlocked: false
+    },
+    upgrade: {
+      multiplier3: new Decimal(1),
+    },
+    me: {
+      mespushed: 0,
+      mes: new Decimal(0),
+      meCost: new Decimal(1000000),
+      multiplier: new Decimal(1),
+      multiplierPerSecond: new Decimal(0),
+      appliedMult: new Decimal(0),
+      totalMultiplier: new Decimal(1),
+      unlocked: false
     }
   }
 
@@ -31,6 +48,7 @@ function reset() {
     charactersHired: [],
     cashPerSecond: new Decimal(0),
     tab: "game",
+    version: 2, 
       keke: {
         unlocked: false,
         kekespushed: 0,
@@ -38,6 +56,19 @@ function reset() {
         kekeCost: new Decimal(50),
         multiplier: new Decimal(1),
         cashPerSecond: new Decimal(0),
+    },
+    upgrade: {
+      multiplier3: new Decimal(1)
+    },
+    me: {
+      mespushed: 0,
+      mes: new Decimal(0),
+      meCost: new Decimal(1000000),
+      multiplier: new Decimal(1),
+      multiplierPerSecond: new Decimal(0),
+      appliedMult: new Decimal(0),
+      totalMultiplier: new Decimal(1),
+      unlocked: false
     }
   }
 }
@@ -50,12 +81,42 @@ function unDecimalifySave() {
   game.keke.kekeCost = new Decimal(game.keke.kekeCost)
   game.keke.multiplier= new Decimal(game.keke.multiplier)
   game.keke.cashPerSecond = new Decimal(game.keke.cashPerSecond)
+  game.upgrade.multiplier3 = new Decimal(game.upgrade.multiplier3)
+  game.me.mes = new Decimal(game.me.mes)
+  game.me.meCost = new Decimal(game.me.meCost)
+  game.me.multiplier = new Decimal(game.me.multiplier)
+  game.me.multiplierPerSecond = new Decimal(game.me.multiplierPerSecond)
+  game.me.appliedMult = new Decimal(game.me.appliedMult)
+  game.me.totalMultiplier = new Decimal(game.me.totalMultiplier)
+}
+
+function fixUndefined() {
+  if (game.upgrade === undefined) game.upgrade = { multiplier3: new Decimal(1) }
+  if (game.version === undefined) game.version = 1
+  if (game.me === undefined) game.me = {mespushed: 0, mes: new Decimal(0), meCost: new Decimal(1000000), multiplier: new Decimal(1), multiplierPerSecond: new Decimal(0), appliedMult: new Decimal(0), totalMultiplier: new Decimal(1)}
+  unDecimalifySave()
+}
+
+function versionCheck() {
+  if (game.version < 2) {
+    if (!game.upgrade) game.upgrade = {multiplier3: new Decimal(1),};
+    game.version = 2
+    unDecimalifySave()
+  }
+  if (game.version < 3) {
+    if (!game.me) game.me = {mespushed: 0, mes: new Decimal(0), meCost: new Decimal(1000000), multiplier: new Decimal(1), multiplierPerSecond: new Decimal(0), appliedMult: new Decimal(0), totalMultiplier: new Decimal(1)}
+  }
 }
 
 function loadGame(loadgame) {
+  fixUndefined()
+  versionCheck()
+  unDecimalifySave()
     reset()
     try {
       game = JSON.parse(loadgame)
+      fixUndefined()
+      versionCheck()
       unDecimalifySave()
   
       let style = game.keke.unlocked ? "display:block" : "display:none";
@@ -67,10 +128,19 @@ function loadGame(loadgame) {
       document.getElementsByClassName("kekeInfo1").style = style;
       document.getElementsByClassName("kekeInfo2").style = style;
       document.getElementsByClassName("CPSBreakdown").style = style;
+
+      let style2 = game.me.unlocked ? "display:block" : "display:none"
+      document.getElementById("character2-button").style = style2;
+      document.getElementById("character2-metext").style = style2;
+      document.getElementById("character2-istext").style = style2;
+      document.getElementById("character2-heretext").style = style2;
+      document.getElementById("character2").style = style2;
+      document.getElementsByClassName("meInfo1").style = style2;
+      document.getElementsByClassName("meInfo2").style = style2;
       update()
       formatThings()
     } catch (error) {
-      console.log("GAME is BROKEN! Error at function loadGame() when parsing save string:\n" + error)
+      console.log("GAME is BROKEN! Error at function loadGame() when parsing save string:\n" + error + "if you're seeing this after resetting your save, disregard it. I have no idea how to fix it, so :shrug:")
       return;
     }
 }
@@ -94,6 +164,9 @@ const roman = new ADNotations.RomanNotation();
 const imperial = new ADNotations.ImperialNotation()
 let notation = scientific;
 
+function changeToADifferentNotation(id) {
+  notation = id;
+}
 // Notation buttons. You can do a similar thing with a dropdown, google up something like "HTML JS dropdown"
 document.getElementById("scientific").onclick = function() {
   notation = scientific;
@@ -145,14 +218,27 @@ function showID(id, condition) {
 
 
 function update() {
-  let totalCPS = game.cashPerSecond.multiply(game.keke.multiplier)
-  document.getElementById("cash_number").innerHTML = game.cash
-  document.getElementById("kekeCost").innerHTML = game.keke.kekeCost
-  document.getElementById("cashstat").innerHTML = game.highestCash
-  document.getElementById("kekeAmount").innerHTML = "You have " + game.keke.kekes + " " +pluralize("Keke", game.keke.kekes)
-  document.getElementById("kekeMultiplier").innerHTML = "x" + notation.format(game.keke.multiplier, 2, 2)
-  document.getElementById("CPSCount").innerHTML = "you are getting " + notation.format(totalCPS, 2, 2) + " cash per second"
-  document.getElementById("CPSCountText").innerHTML = "keke is generating " + notation.format(game.keke.cashPerSecond, 2, 1) + " cash per second <br> mutliplied by her multiplier of " + notation.format(game.keke.multiplier, 2, 2) + ", you are getting " + notation.format(totalCPS, 2, 2) + " cash per second."
+  document.getElementById("cash_number").textContent = game.cash
+  document.getElementById("kekeCost").textContent = notation.format(game.keke.kekeCost, 2, 2)
+  document.getElementById("meCost").textContent = notation.format(game.me.meCost, 2, 2)
+  document.getElementById("cashstat").textContent = game.highestCash
+  document.getElementById("kekeAmount").textContent = "You have " + game.keke.kekes + " " + pluralize("Keke", game.keke.kekes)
+  document.getElementById("kekeMultiplier").textContent = "x" + notation.format(game.keke.multiplier, 2, 2)
+  document.getElementById("meAmount").textContent = "You have " + game.me.mes + " " + pluralize("Me", game.me.mes)
+  document.getElementById("meMultiplier").textContent = "x" + notation.format(game.me.multiplier, 2, 2)
+  document.getElementById("CPSCount").textContent = "you are getting " + notation.format(game.cashPerSecond.multiply(getTotalMultiplier()), 2, 2) + " cash per second"
+ document.getElementById("CPSCountText").innerHTML = "keke is generating " + notation.format(game.keke.cashPerSecond, 2, 1) + " cash per second <br> mutliplied by the total multiplier of " + notation.format(getTotalMultiplier(), 2, 2) + ", you are getting " + notation.format(game.cashPerSecond.multiply(getTotalMultiplier()), 2, 2)  + " cash per second."
+  if (!game.upgradesPurchased.includes("upgrade2")) {
+  document.getElementById("BreakdownInStats").innerHTML = "keke is generating " + notation.format(game.keke.cashPerSecond, 2, 1) + " cash per second <br> mutliplied by her multiplier of " + notation.format(game.keke.multiplier, 2, 2) + ", you are getting " + notation.format(game.cashPerSecond.multiply(getTotalMultiplier()), 2, 2)  + " cash per second."
+  } else if (!game.upgradesPurchased.includes("upgrade3")) {
+    document.getElementById("BreakdownInStats").innerHTML = "keke is generating " + notation.format(game.keke.cashPerSecond, 2, 1) + " cash per second <br> mutliplied by her multiplier of " + notation.format(game.keke.multiplier, 2, 2) + ", multiplied by the second upgrade's multiplier of 2, you are getting " + notation.format(game.cashPerSecond.multiply(getTotalMultiplier()), 2, 2)  + " cash per second."
+  } else if (game.upgradesPurchased.includes("upgrade2") && game.upgradesPurchased.includes("upgrade3")) {
+    document.getElementById("BreakdownInStats").innerHTML = "keke is generating " + notation.format(game.keke.cashPerSecond, 2, 1) + " cash per second <br> mutliplied by her multiplier of " + notation.format(game.keke.multiplier, 2, 2) + ", <br> multiplied by the second upgrade's multiplier of 2, <br> multiplied by the third upgrade's multiplier of " + notation.format(game.upgrade.multiplier3, 2, 2) + " <br> you are getting " + notation.format(game.cashPerSecond.multiply(getTotalMultiplier()), 2, 2)  + " cash per second."
+  } else if (game.upgradesPurchased.includes("upgrade2") && game.upgradesPurchased.includes("upgrade3") && game.upgradesPurchased.includes("upgradeME")) {
+    document.getElementById("BreakdownInStats").innerHTML = "keke is generating " + notation.format(game.keke.cashPerSecond, 2, 1) + " cash per second <br> mutliplied by her multiplier of " + notation.format(game.keke.multiplier, 2, 2) + ", <br> multiplied by the second upgrade's multiplier of 2, <br> multiplied by the third upgrade's multiplier of " + notation.format(game.upgrade.multiplier3, 2, 2) + ", multiplied by ME's generated multiplier of " + notation.format(game.me.totalMultiplier, 2, 2) + " <br> you are getting " + notation.format(game.cashPerSecond.multiply(getTotalMultiplier()), 2, 2)  + " cash per second."
+  } else {
+    document.getElementById("BreakdownInStats").innerHTML = "haha fuck you <br> if you're seeing this, something went desparately wrong"
+  } 
   formatThings()
 }
 
@@ -179,9 +265,34 @@ showID("upgrade1", true)
 } else {
    showID("upgrade1", false)
 }
-//completely removes upgrade1 from showing
-  if (game.upgradesPurchased.includes("upgrade1")) {
+if (game.cash.gte(100) || game.keke.kekes.gte(4)) { // for upgrade2
+  showID("upgrade2", true)
+} else {
+  showID("upgrade2", false)
+}
+if (game.cash.gte(10000) && game.upgradesPurchased.includes("upgrade2")) {
+  showID("upgrade3", true)
+} else {
+  showID("upgrade3", false)
+}
+if (game.upgradesPurchased.includes("upgrade3") && game.cash.gte(1e5)) {
+showID("upgradeME", true)
+} else {
+showID("upgradeME", false)
+}
+
+//completely removes upgrades from showing
+  if (game.upgradesPurchased.includes("upgrade1") && game.cash >= 10) {
     showID("upgrade1", false)
+  }
+  if (game.upgradesPurchased.includes("upgrade2")) {
+    showID("upgrade2", false)
+  }
+  if (game.upgradesPurchased.includes("upgrade3")) {
+    showID("upgrade3", false)
+  }
+  if (game.upgradesPurchased.includes("upgradeME")) {
+    showID("upgradeME", false)
   }
 //kekecharacter show/hide if
 
@@ -195,10 +306,27 @@ function showAllKekeThings() {
   showID("kekeMultiplier", true)
 }
 
+function showAllMeThings() {
+  showID("character2-button", true)
+  showID("character2-metext", true)
+  showID("character2-istext", true)
+  showID("character2-heretext", true)
+  showID("character2", true)
+  showID("meAmount", true)
+  showID("meMultiplier", true)
+}
+
 if (game.upgradesPurchased.includes("upgrade1") && game.cash >= 10) {
   showAllKekeThings()
   game.keke.unlocked = true
+  showID("upgrade1", false)
 }
+
+if (game.upgradesPurchased.includes("upgrade3") && game.cash.gte(1e5)) {
+  showAllMeThings()
+  game.me.unlocked = true
+}
+
 if (game.charactersHired.includes("keke")) { //keeps keke showing no matter what
   showID("character1-button", true)
   showID("character1-keketext", true)
@@ -207,7 +335,15 @@ if (game.charactersHired.includes("keke")) { //keeps keke showing no matter what
   showID("character1", true)
   showID("kekeAmount", true)
   showID("kekeMultiplier", true)
-  document.getElementsByClassName("CPSBreakdown").style.display = "block"
+}
+if (game.charactersHired.includes("me")) {
+  showID("character2-button", true)
+  showID("character2-metext", true)
+  showID("character2-istext", false)
+  showID("character2-heretext", false)
+  showID("character2", true)
+  showID("meAmount", true)
+  showID("meMultiplier", true)
 }
 }
 //end 
@@ -227,6 +363,19 @@ function purchaseUpgrade(id) {
   game.cash = game.cash.minus(10);
 showID("upgrade1", false)
 }
+if (game.upgradesPurchased.includes("upgrade2")) {
+  game.cash = game.cash.minus(500)
+  showID("upgrade2", false)
+}
+if (game.upgradesPurchased.includes("upgrade3")) {
+  game.cash.minus(50000)
+  showID("upgrade3", false)
+}
+if (game.upgradesPurchased.includes("upgradeME")) {
+  game.cash.minus(5e5)
+  showID("upgradeME", false)
+  game.me.mes.add(1)
+}
 }
 //end
 
@@ -235,8 +384,16 @@ function canBuyKeke() {
   return game.upgradesPurchased.includes("upgrade1") && game.cash >= 10;
 }
 
+function canBuyMe() {
+  return game.upgradesPurchased.includes("upgradeME")
+}
+
 function isKekeHired() {
   return game.charactersHired.includes("keke");
+}
+
+function isMeHired() {
+  return game.charactersHired.includes("me")
 }
 
 function getCurrentTab() {
@@ -245,11 +402,23 @@ function getCurrentTab() {
 
 function updateKeke() {
   let kekeShown = getCurrentTab() === "game" && (canBuyKeke() || isKekeHired());
-  document.getElementById("chartable").style = kekeShown ? "display:block" : "display:none";
+  document.getElementsByClassName("kekeCharacter").style = kekeShown ? "display:block" : "display:none";
+  document.getElementsByClassName("kekeInfo1").style = kekeShown ? "display:block" : "display:none";
+  document.getElementsByClassName("kekeInfo2").style = kekeShown ? "display:block" : "display:none";
+  update()
 }
+function updateMe() {
+  let meShown = getCurrentTab() === "game" && (canBuyMe() || isMeHired())
+  document.getElementsByClassName("meCharacter").style = meShown ? "display:block" : "display:none";
+  document.getElementsByClassName("meInfo1").style = meShown ? "display:block" : "display:none";
+  document.getElementsByClassName("meInfo2").style = meShown ? "display:block" : "display:none";
+  update()
+}
+
 function updateCharacters() {
   updateKeke();
-  // .. updateMe() etc or in the future something like:
+  updateMe();
+  //other characters in the future
 }
 function updateUI() {
   updateCharacters();
@@ -264,21 +433,64 @@ function hireKeke() { //keke hiring
     if (game.keke.kekespushed == 1) {
       game.cash = game.cash.minus(game.keke.kekeCost);
       game.keke.kekeCost = game.keke.kekeCost.multiply(1.25).floor();
-      document.getElementById("kekeCost").innerHTML = game.keke.kekeCost
+      document.getElementById("kekeCost").textContent = game.keke.kekeCost
       //game.cashPerSecond = game.cashPerSecond.add(2.5 * game.keke.multiplier);
       game.keke.cashPerSecond = game.keke.cashPerSecond.add(2.5);
       game.cashPerSecond = game.cashPerSecond.add(2.5)
       game.keke.kekes = game.keke.kekes.add(1);
       game.keke.multiplier = game.keke.multiplier.multiply(1.1);
+      game.upgrade.multiplier3 = game.upgrade.multiplier3.plus(0.01)
       updateKeke()
     }
   }
 }
 //end
+function hireMe() {
+  if (game.cash.gte(game.me.meCost)) {
+    if (game.me.mespushed < 1) {
+      game.charactersHired.push('me');
+      game.me.mespushed += 1
+    }
+    if (game.me.mespushed == 1) {
+      game.cash = game.cash.minus(game.me.meCost);
+      game.me.meCost = game.me.meCost.multiply(2).floor();
+      document.getElementById("meCost").textContent = game.me.meCost
+      game.me.multiplierPerSecond = game.me.multiplierPerSecond.add(1)
+      game.me.mes = game.me.mes.add(1)
+      game.me.multiplier = game.me.multiplier.add(0.25)
+      updateMe()
+    }
+  }
+}
+function getTotalMultiplier() {
+  /*if (game.upgradesPurchased.includes("upgrade2")) {
+  return game.keke.multiplier.multiply(2)
+  } else if (!game.upgradesPurchased.includes("upgrade2") && game.upgrade.multiplier3.lte(1)) {
+    return game.keke.multiplier
+  } else if (game.upgradesPurchased.includes("upgrade2") && game.upgrade.multiplier3.gt(1)) {
+    return game.keke.multiplier.multiply(2).multiply(game.upgrade.multiplier3)
+  }*/
+  let mult = new Decimal(1)
+  if (game.keke.kekes.gt(1)) mult = mult.mul(game.keke.multiplier)
+  if (game.upgradesPurchased.includes("upgrade2")) mult = mult.mul(2)
+  if (game.upgradesPurchased.includes("upgrade3")) mult = mult.mul(game.upgrade.multiplier3)
+  if (game.upgradesPurchased.includes("upgradeME")) mult = mult.mul(getTotalMultiplierMultiplier())
+  return mult
+}
+
+function getTotalMultiplierMultiplier() {
+  function addToMultMult() {
+    game.me.totalMultiplier = game.me.totalMultiplier.add(game.me.multiplierPerSecond)
+  }
+  setInterval(addToMultMult, 1000)
+  return game.me.totalMultiplier
+}
+
 
 //when you get a character, say, keke, this function is the one generating CPS
 function addCPS() {
-game.cash = game.cash.add(game.cashPerSecond.multiply(game.keke.multiplier))
+  let totalMultiplier = getTotalMultiplier()
+game.cash = game.cash.add(game.cashPerSecond.multiply(totalMultiplier))
 }
 //end
 
@@ -288,6 +500,8 @@ if (game.upgradesPurchased.length == 0) {
 game.cash = game.cash.add(1)
 } else if (game.upgradesPurchased.includes("upgrade1")) {
 game.cash = game.cash.add(2)
+} else if (game.upgradesPurchased.includes("upgradeME")) {
+  game.cash = game.cash.multiply(getTotalMultiplierMultiplier())
 }
 }
 //end
